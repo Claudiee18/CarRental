@@ -55,6 +55,18 @@ public class CostumersInfoPage extends javax.swing.JFrame {
         }
     }
 
+    private void updateCarAvailability(int carId) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String query = "UPDATE carselection SET availability = FALSE WHERE car_id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, carId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -297,76 +309,43 @@ public class CostumersInfoPage extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         String FirstName = FName.getText();
-        String LastName = Lname.getText();
-        String email = Email.getText();
-        String phoneNumber = PhoneNum.getText();
-        String address = Address.getText();
-        int selectedCarId = 0; // You should get this value from somewhere
-    
-        // Insert customer details and create rental record
-        try {
-            connection = DBConnection.getConnection();
-            
-            // First insert customer info
-            String customerQuery = "INSERT INTO costumerinfo (First_Name, Last_Name, Email, phone_number, Address, car_id) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement customerPs = connection.prepareStatement(customerQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-            customerPs.setString(1, FirstName);
-            customerPs.setString(2, LastName);
-            customerPs.setString(3, email);
-            customerPs.setString(4, phoneNumber);
-            customerPs.setString(5, address);
-            customerPs.setInt(6, selectedCarId);
-    
-            customerPs.executeUpdate();
-            
-            // Create rental record
-            String rentalQuery = "INSERT INTO rentals (customer_id, car_id, rental_date, return_date) VALUES (?, ?, CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY))";
-            PreparedStatement rentalPs = connection.prepareStatement(rentalQuery);
-            
-            // Get the generated customer ID
-            ResultSet rs = customerPs.getGeneratedKeys();
-            if (rs.next()) {
-                int customerId = rs.getInt(1);
-                rentalPs.setInt(1, customerId);
-                rentalPs.setInt(2, selectedCarId);
-                rentalPs.executeUpdate();
-            }
-    
-            JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
-    
-            // Update car availability
-            updateCarAvailability(selectedCarId);
-    
-            // Create and show payment page
-            Rental_PaymentPage Payment = new Rental_PaymentPage();
-            Payment.setVisible(true);
-            dispose();
-    
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error saving customer details: " + e.getMessage());
-        }
-}
+String LastName = Lname.getText();
+String email = Email.getText();
+String phoneNumber = PhoneNum.getText();
+String address = Address.getText();
+int selectedCarId = 0; // You should get this value from somewhere
 
-// Method to update car availability
-private void updateCarAvailability(int carId) {
-    try {
-        Connection con = DBConnection.getConnection();
-        String query = "UPDATE cars SET availability = FALSE WHERE car_id = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, carId);
-        ps.executeUpdate();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-           Rental_PaymentPage Payment = new Rental_PaymentPage();
-           
-           Payment.show();
-           
-           
-           dispose();
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+try {
+    connection = DBConnection.getConnection();
+    
+    // Insert customer info
+    String customerQuery = "INSERT INTO costumerinfo (First_Name, Last_Name, Email, phone_number, Address, car_id) VALUES (?, ?, ?, ?, ?, ?)";
+    PreparedStatement customerPs = connection.prepareStatement(customerQuery);
+    customerPs.setString(1, FirstName);
+    customerPs.setString(2, LastName);
+    customerPs.setString(3, email);
+    customerPs.setString(4, phoneNumber);
+    customerPs.setString(5, address);
+    customerPs.setInt(6, selectedCarId);
+
+    customerPs.executeUpdate();
+    JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
+
+    // Update car availability
+    updateCarAvailability(selectedCarId);
+
+    // Create and show payment page
+    Rental_PaymentPage Payment = new Rental_PaymentPage();
+    Payment.setVisible(true);
+    dispose();
+
+} catch (SQLException e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(this, "Error saving customer details: " + e.getMessage());
+}
+            
+        }  
+    //GEN-LAST:event_jButton1ActionPerformed
 
     private void PhoneNumKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PhoneNumKeyReleased
 
