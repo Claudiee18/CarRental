@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 /**
  *
  * @author admin
@@ -295,40 +296,56 @@ public class CostumersInfoPage extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-    String FirstName = FName.getText();
-    String LastName = Lname.getText();
-    String email = Email.getText();
-    String phoneNumber = PhoneNum.getText();
-    String address = Address.getText();
-        int selectedCarId = 0;
+        String FirstName = FName.getText();
+        String LastName = Lname.getText();
+        String email = Email.getText();
+        String phoneNumber = PhoneNum.getText();
+        String address = Address.getText();
+        int selectedCarId = 0; // You should get this value from somewhere
     
-
-    int carId = selectedCarId; 
-
-    // Insert customer details into the database
+        // Insert customer details and create rental record
         try {
-          connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/forexercises", "root", "password" );
-          
-          
-        String query = "INSERT INTO costumerinfo (First_Name,Last_Name,Email, phone_number, Address, car_id) VALUES (?, ?, ?, ?, ?,?)";
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, FirstName);
-        ps.setString(2, LastName);
-        ps.setString(3, email);
-        ps.setString(4, phoneNumber);
-        ps.setString(5, address);
-        ps.setInt(6, carId); // Selected car ID from car selection page
-
-        ps.executeUpdate();
-        JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
-
-        // Optionally update the car availability
-        updateCarAvailability(carId);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error saving customer details!");
-    }
+            connection = DBConnection.getConnection();
+            
+            // First insert customer info
+            String customerQuery = "INSERT INTO costumerinfo (First_Name, Last_Name, Email, phone_number, Address, car_id) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement customerPs = connection.prepareStatement(customerQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            customerPs.setString(1, FirstName);
+            customerPs.setString(2, LastName);
+            customerPs.setString(3, email);
+            customerPs.setString(4, phoneNumber);
+            customerPs.setString(5, address);
+            customerPs.setInt(6, selectedCarId);
+    
+            customerPs.executeUpdate();
+            
+            // Create rental record
+            String rentalQuery = "INSERT INTO rentals (customer_id, car_id, rental_date, return_date) VALUES (?, ?, CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY))";
+            PreparedStatement rentalPs = connection.prepareStatement(rentalQuery);
+            
+            // Get the generated customer ID
+            ResultSet rs = customerPs.getGeneratedKeys();
+            if (rs.next()) {
+                int customerId = rs.getInt(1);
+                rentalPs.setInt(1, customerId);
+                rentalPs.setInt(2, selectedCarId);
+                rentalPs.executeUpdate();
+            }
+    
+            JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
+    
+            // Update car availability
+            updateCarAvailability(selectedCarId);
+    
+            // Create and show payment page
+            Rental_PaymentPage Payment = new Rental_PaymentPage();
+            Payment.setVisible(true);
+            dispose();
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error saving customer details: " + e.getMessage());
+        }
 }
 
 // Method to update car availability
