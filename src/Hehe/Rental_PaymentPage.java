@@ -18,6 +18,16 @@ public class Rental_PaymentPage extends javax.swing.JFrame {
     String user = "root";
     String password = "password";
 
+    private String carName;
+private String make;
+private String model;
+private int year;
+private double price;
+private int rentalDays;
+private double totalCost;
+private javax.swing.JLabel carNameLabel; // Add this if not already defined
+private javax.swing.JLabel totalCostLabel; // Add this if not already defined
+
     /**
      * Creates new form Rental_PaymentPage
      */
@@ -32,27 +42,42 @@ public class Rental_PaymentPage extends javax.swing.JFrame {
     
     
     public void loadRentalDetails() {
-    String query = "SELECT * FROM forcostumerpayment WHERE is_paid = FALSE ORDER BY rental_id DESC LIMIT 1";
-
-     if (rs.next()) {
-            this.carName = rs.getString("car_name");
-            this.make = rs.getString("make");
-            this.model = rs.getString("model");
-            this.year = rs.getInt("year");
-            this.price = rs.getDouble("price");
-            this.totalDays = rs.getInt("total_days");
-            this.totalCost = rs.getDouble("total_cost");
-
-            // ✅ Now using variables inside UI components
-            carNameLabel.setText(this.carName);
-            totalCostLabel.setText("Total Cost: $" + this.totalCost);
-
-            System.out.println("Rental: " + this.carName + " - " + this.totalCost);
+        String query = "SELECT * FROM forcostumerpayment WHERE is_paid = FALSE ORDER BY rental_id DESC LIMIT 1";
+    
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+    
+            if (rs.next()) {
+                this.carName = rs.getString("car_name");
+                this.make = rs.getString("make");
+                this.model = rs.getString("model");
+                this.year = rs.getInt("year");
+                this.price = rs.getDouble("price");
+                this.rentalDays = rs.getInt("total_days");
+                this.totalCost = rs.getDouble("total_cost");
+    
+                // Update UI components
+                txtRentalDate.setText(rs.getString("rental_date"));
+                txtReturnDate.setText(rs.getString("return_date"));
+                totalDays.setText(String.valueOf(this.totalDays));
+                jTextField4.setText(String.format("$%.2f", this.totalCost));
+    
+                System.out.println("Rental details loaded successfully");
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "No pending rental payment found", 
+                    "Information", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Error loading rental details: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
    
     
     
