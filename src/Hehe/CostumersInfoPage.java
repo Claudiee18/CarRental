@@ -74,6 +74,9 @@ public class CostumersInfoPage extends javax.swing.JFrame {
     }
 }
 
+private String rentalDate;
+private String returnDate;
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -337,6 +340,12 @@ try {
 
     customerPs.executeUpdate();
     JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
+
+    String rentalQuery = "INSERT INTO forcostumerpayment (car_id, RentalDate, ReturnDate, is_paid) VALUES (?, CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), false)";
+    PreparedStatement rentalPs = connection.prepareStatement(rentalQuery);
+    rentalPs.setInt(1, selectedCarId);
+    rentalPs.executeUpdate();
+
 
     // Update car availability
     updateCarAvailability(selectedCarId);
