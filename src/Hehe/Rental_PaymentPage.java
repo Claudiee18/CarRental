@@ -42,9 +42,12 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
     
     
    public void loadRentalDetails() {
-        String query = "SELECT *, DATEDIFF(rentDate, returnDate) * -1 as days_difference " +
-              "FROM forcostumerpayment WHERE is_paid = FALSE " +
-              "ORDER BY costumer_id DESC LIMIT 1";
+        String query = "SELECT f.*,  c.car_name, c.Make, c.Model, c.year,c.Car_Price" +
+                  "DATEDIFF(rentDate, returnDate) * -1 as days_difference " +
+                  "FROM forcostumerpayment f " +
+                  "JOIN carselection c ON f.car_id = c.car_id " +
+                  "WHERE f.is_paid = FALSE " +
+                  "ORDER BY f.costumer_id DESC LIMIT 1";
     
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement pstmt = conn.prepareStatement(query);
@@ -59,7 +62,7 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
                 this.rentalDays = rs.getInt("totalDays");
                 this.totalCost = rs.getDouble("total_cost");
                 int daysDifference = rs.getInt("days_difference");
-                double pricePerDay = rs.getDouble("Car_Price");
+                double pricePerDay = rs.getDouble("price");
                 double totalCost = pricePerDay * daysDifference;
     
                 // Update UI components
