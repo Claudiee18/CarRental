@@ -60,7 +60,7 @@ public class CostumersInfoPage extends javax.swing.JFrame {
         Connection con = DBConnection.getConnection();
         String query = "UPDATE carselection SET availability = FALSE WHERE car_id = ?";
         PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, car_id);
+        ps.setInt(1, carId);
         ps.executeUpdate();
         
         JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
