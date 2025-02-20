@@ -1405,7 +1405,7 @@ public class CarSelectionPage extends javax.swing.JFrame {
         saveRentalDetails(carName, make, model, year, price, totalDays);
         
         // Move to next page
-        CostumersInfoPage paymentPage = new CostumersInfoPage();
+        CostumersInfoPage paymentPage = new CostumersInfoPage(selectedCarId);
         paymentPage.setVisible(true);
         this.dispose();
     } else {

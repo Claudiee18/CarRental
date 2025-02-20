@@ -41,12 +41,14 @@ public class CostumersInfoPage extends javax.swing.JFrame {
     }
 }
     private Connection connection;
+    private int selectedCarId;
 
     /**
      * Creates new form CostumersInfoPage
      */
-    public CostumersInfoPage() {
+    public CostumersInfoPage(int carId) {
         initComponents();
+        this.selectedCarId = carId;
          this.setExtendedState(CarSelectionPage.MAXIMIZED_BOTH);
          try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/forexercises", "root", "password" );
@@ -323,7 +325,7 @@ String LastName = Lname.getText();
 String email = Email.getText();
 String phoneNumber = PhoneNum.getText();
 String address = Address.getText();
-int selectedCarId = 0; // You should get this value from somewhere
+ // You should get this value from somewhere
 
 try {
     connection = DBConnection.getConnection();
@@ -336,7 +338,7 @@ try {
     customerPs.setString(3, email);
     customerPs.setString(4, phoneNumber);
     customerPs.setString(5, address);
-    customerPs.setInt(6, selectedCarId);
+    customerPs.setInt(6, this.selectedCarId);
 
     customerPs.executeUpdate();
     JOptionPane.showMessageDialog(this, "Customer details saved successfully!");

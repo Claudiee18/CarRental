@@ -73,7 +73,9 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
                 jTextField4.setText(String.format("$%.2f", totalCost));
                 
     
-                System.out.println("Rental details loaded successfully");
+                System.out.println("Days: " + daysDifference);  // Debug print
+                System.out.println("Price per day: " + pricePerDay);  // Debug print
+                System.out.println("Total cost: " + totalCost);
             } else {
                 JOptionPane.showMessageDialog(this, 
                     "No pending rental payment found", 
