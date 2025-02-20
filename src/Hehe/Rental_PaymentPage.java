@@ -59,13 +59,15 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
                 this.rentalDays = rs.getInt("totalDays");
                 this.totalCost = rs.getDouble("total_cost");
                 int daysDifference = rs.getInt("days_difference");
+                double pricePerDay = rs.getDouble("Car_Price");
+                double totalCost = pricePerDay * daysDifference;
     
                 // Update UI components
                 txtRentalDate.setText(rs.getString("rentDate"));
                 txtReturnDate.setText(rs.getString("returnDate"));
-                totalDays.setText(String.valueOf(this.totalDays));
-                jTextField4.setText(String.format("$%.2f", this.totalCost));
                 totalDays.setText(String.valueOf(daysDifference));
+                jTextField4.setText(String.format("$%.2f", totalCost));
+                
     
                 System.out.println("Rental details loaded successfully");
             } else {
