@@ -341,7 +341,7 @@ try {
     customerPs.executeUpdate();
     JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
 
-    String rentalQuery = "INSERT INTO forcostumerpayment (car_id, RentalDate, ReturnDate, is_paid) VALUES (?, CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), false)";
+    String rentalQuery = "INSERT INTO forcostumerpayment (car_id, rentDate, returnDate, totalDays) VALUES (?, CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), 7)";
     PreparedStatement rentalPs = connection.prepareStatement(rentalQuery);
     rentalPs.setInt(1, selectedCarId);
     rentalPs.executeUpdate();

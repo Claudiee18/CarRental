@@ -42,13 +42,12 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
     
     
    public void loadRentalDetails() {
-        String query = "SELECT f.Costumer_id, f.rentDate, f.returnDate, " +
-              "c.Car_Price, c.car_name, c.Make, c.Model, c.year, " +
-              "DATEDIFF(f.rentDate, f.returnDate) * -1 as days_difference " +
-              "FROM forcostumerpayment f " +
-              "JOIN carselection c ON f.car_id = c.car_id " +
-              "WHERE f.is_paid = FALSE " +
-              "ORDER BY f.Costumer_id DESC LIMIT 1";
+    String query = "SELECT f.Costumer_id, f.rentDate, f.returnDate, f.totalDays, " +
+    "c.Car_Price, c.car_name, c.Make, c.Model, c.year, " +
+    "DATEDIFF(f.rentDate, f.returnDate) * -1 as days_difference " +
+    "FROM forcostumerpayment f " +
+    "LEFT JOIN carselection c ON f.car_id = c.car_id " +
+    "ORDER BY f.Costumer_id DESC LIMIT 1";
     
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement pstmt = conn.prepareStatement(query);
