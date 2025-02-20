@@ -56,16 +56,23 @@ public class CostumersInfoPage extends javax.swing.JFrame {
     }
 
     private void updateCarAvailability(int carId) {
-        try {
-            Connection con = DBConnection.getConnection();
-            String query = "UPDATE carselection SET availability = FALSE WHERE car_id = ?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, carId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    try {
+        Connection con = DBConnection.getConnection();
+        String query = "UPDATE carselection SET availability = FALSE WHERE car_id = ?";
+        PreparedStatement ps = con.prepareStatement(query);
+        ps.setInt(1, car_id);
+        ps.executeUpdate();
+        
+        JOptionPane.showMessageDialog(this, "Customer details saved successfully!");
+        
+        // Simply open payment page without loading rental details
+        Rental_PaymentPage Payment = new Rental_PaymentPage();
+        Payment.setVisible(true);
+        dispose();
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

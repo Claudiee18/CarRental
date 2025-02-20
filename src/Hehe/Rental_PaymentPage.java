@@ -42,7 +42,7 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
     
     
     public void loadRentalDetails() {
-        String query = "SELECT * FROM forcostumerpayment WHERE is_paid = FALSE ORDER BY rental_id DESC LIMIT 1";
+        String query = "SELECT * FROM forcostumerpayment WHERE is_paid = FALSE ORDER BY costumer_id DESC LIMIT 1";
     
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement pstmt = conn.prepareStatement(query);
@@ -83,7 +83,7 @@ private javax.swing.JLabel totalCostLabel; // Add this if not already defined
     
     
     public void markAsPaid() {
-    String query = "UPDATE forcostumerpayment SET is_paid = TRUE WHERE is_paid = FALSE ORDER BY rental_id DESC LIMIT 1";
+    String query = "UPDATE forcostumerpayment SET is_paid = TRUE WHERE is_paid = FALSE ORDER BY costumer_id DESC LIMIT 1";
 
     try (Connection conn = DatabaseConnector.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(query)) {
